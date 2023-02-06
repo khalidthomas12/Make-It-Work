@@ -14,48 +14,76 @@ struct LoginView: View {
     @State private var error = ""
     @State private var isLoading = false
     @State private var showHome = false
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
-        VStack {
-            Text("Sign In")
-                .font(.largeTitle)
-                .foregroundColor(.blue)
-            TextField("Email", text: $email)
-                .padding()
-                .background(Color(.lightGray))
-                .cornerRadius(10)
-                .padding(.bottom, 20)
-            
-            SecureField("Password", text: $password)
-                .padding()
-                .background(Color(.lightGray))
-                .cornerRadius(10)
-                .padding(.bottom, 20)
-            
-            if error != "" {
-                Text(error)
-                    .font(.caption)
-                    .foregroundColor(.red)
+        NavigationView {
+            ZStack{
+                Circle()
+                    .foregroundColor(.blue)
+                    .frame(width: 700, height: 700)
+                    .opacity(0.15)
+                Circle()
+                    .foregroundColor(.blue)
+                    .frame(width: 700, height: 700)
+                    .opacity(0.3)
+                Circle()
+                    .foregroundColor(.blue)
+                    .frame(width: 500, height: 500)
+                VStack {
+                    Spacer()
+                    
+                    Image(systemName: "figure.highintensity.intervaltraining")
+                        .resizable()
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(.white)
+                        .padding()
+                    
+                    TextField("Email", text: $email)
+                        .padding()
+                        .frame(width: 300)
+                        .background(.white)
+                        .cornerRadius(10)
+                        .padding(.bottom, 20)
+                    
+                    SecureField("Password", text: $password)
+                        .padding()
+                        .frame(width: 300)
+                        .background(.white)
+                        .cornerRadius(10)
+                        .padding(.bottom, 20)
+                    
+                    if error != "" {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
+                    
+                    Button(action: {
+                        self.signIn()
+                    }) {
+                        Text("Sign In")
+                    }
+                    .padding()
+                    .background(.white)
+                    .foregroundColor(.blue)
+                    .cornerRadius(10)
+                    .padding(.top, 20)
+                    
+                    NavigationLink(destination: SignUpView()){
+                        Text("Sign Up")
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    Spacer()
+                    
+                    
+                    if isLoading {
+                        ProgressView()
+                    }
+                   
+                }
             }
-            
-            Button(action: {
-                self.signIn()
-            }) {
-                Text("Sign In")
-            }
-            .padding()
-            .background(.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .padding(.top, 20)
-            
-            if isLoading {
-                ProgressView()
-            }
-            
-        }
-        .sheet(isPresented: $showHome) {
-            HomeView()
         }
         .padding()
     }
@@ -68,6 +96,7 @@ struct LoginView: View {
                 self.error = "Invalid email or password"
                 self.isLoading = false
             } else {
+                appState.hasOnboarded = true
                 self.showHomeScreen()
             }
         }
@@ -80,3 +109,5 @@ struct LoginView: View {
         self.showHome = true
     }
 }
+
+
